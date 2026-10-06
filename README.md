@@ -1,9 +1,9 @@
 # Browser Bridge Ext for local coding harness
 
-Let an AI coding agent drive your real Chrome, Edge, or Firefox — without headless, without Selenium, without
+Let an AI coding agent drive your real Chrome, Edge, or Firefox â€” without headless, without Selenium, without
 losing your login sessions. It turns your browser into a tool any local agent can use.
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License: MIT + Commercial](https://img.shields.io/badge/license-MIT%20%2B%20Commercial-blue.svg)](LICENSE)
 
 ### What you can do
 
@@ -15,7 +15,7 @@ losing your login sessions. It turns your browser into a tool any local agent ca
 | **Record & replay** | Agent records actions as GIFs for debugging or documentation |
 
 ```
-agent ──MCP stdio / CLI──► bridge (Node) ◄──native messaging or WebSocket──► extension (Chrome / Edge / Firefox)
+agent â”€â”€MCP stdio / CLIâ”€â”€â–º bridge (Node) â—„â”€â”€native messaging or WebSocketâ”€â”€â–º extension (Chrome / Edge / Firefox)
 ```
 
 ## Built to save context
@@ -56,9 +56,9 @@ node dist/bridge.cjs install     # registers the native messaging host (current 
 
 | Browser | Steps |
 |---|---|
-| Chrome | `chrome://extensions` → Developer mode → **Load unpacked** → `dist/chrome` |
-| Edge | `edge://extensions` → Developer mode → **Load unpacked** → `dist/edge` |
-| Firefox | `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on** → `dist/firefox/manifest.json`, then open the toolbar popup → **Grant site access** |
+| Chrome | `chrome://extensions` â†’ Developer mode â†’ **Load unpacked** â†’ `dist/chrome` |
+| Edge | `edge://extensions` â†’ Developer mode â†’ **Load unpacked** â†’ `dist/edge` |
+| Firefox | `about:debugging#/runtime/this-firefox` â†’ **Load Temporary Add-on** â†’ `dist/firefox/manifest.json`, then open the toolbar popup â†’ **Grant site access** |
 
 The Chromium build ships with a fixed key, so its id is stable (`dist/ext-id.json`) and already allowed by
 the native host. Temporary add-ons in Firefox are removed when Firefox restarts. To keep the add-on
@@ -175,5 +175,5 @@ After rebuilding the extension, delete that profile, because Chrome caches the o
 
 ## License
 
-MIT License — free for personal, educational, and non-commercial use.
+MIT License â€” free for personal, educational, and non-commercial use.
 Commercial / business use requires a paid license. Contact [vikasrulez@gmail.com](mailto:vikasrulez@gmail.com).
