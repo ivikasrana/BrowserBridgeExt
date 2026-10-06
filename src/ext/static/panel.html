@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Browser Bridge Ext</title>
+  <link rel="stylesheet" href="ui.css" />
+</head>
+<body class="panel">
+  <header>
+    <span id="dot" class="dot"></span>
+    <strong>Browser Bridge</strong>
+    <span id="status" class="muted"></span>
+  </header>
+
+  <section class="row">
+    <button id="pause"></button>
+    <button id="side" class="ghost">Open side panel</button>
+    <button id="grant" class="ghost" hidden>Grant site access</button>
+  </section>
+  <p id="err" class="err" hidden></p>
+
+  <section>
+    <h2>Activity</h2>
+    <ol id="log" class="log"><li class="muted">No activity yet.</li></ol>
+  </section>
+
+  <section>
+    <h2>Site access</h2>
+    <label class="field">Mode
+      <select id="mode">
+        <option value="ask">Ask for each new site</option>
+        <option value="allow">Allow all sites (except blocked)</option>
+      </select>
+    </label>
+    <div class="lists">
+      <div><h3>Allowed</h3><ul id="allowed" class="chips"></ul></div>
+      <div>
+        <h3>Blocked</h3><ul id="blocked" class="chips"></ul>
+        <form id="blockForm" class="inline"><input id="blockHost" placeholder="example.com" /><button>Block</button></form>
+      </div>
+    </div>
+  </section>
+
+  <details>
+    <summary>Connection</summary>
+    <label class="field">Transport
+      <select id="transport">
+        <option value="auto">Auto (native, then WebSocket)</option>
+        <option value="native">Native messaging</option>
+        <option value="ws">WebSocket</option>
+      </select>
+    </label>
+    <label class="field">Port <input id="port" type="number" min="1" max="65535" /></label>
+    <label class="field">Token <input id="token" type="password" placeholder="output of: browser-bridge token" /></label>
+    <label class="check" id="dbgRow"><input id="debugger" type="checkbox" /> Use debugger API (trusted input, full-page shots)</label>
+    <div class="row"><button id="save">Save</button><button id="reconnect" class="ghost">Reconnect</button></div>
+    <p class="muted small">One-time setup: <code>node dist/bridge.cjs install</code></p>
+  </details>
+
+  <script src="panel.js"></script>
+</body>
+</html>

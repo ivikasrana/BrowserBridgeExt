@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Allow agent access?</title>
+  <link rel="stylesheet" href="ui.css" />
+</head>
+<body class="approve">
+  <h1>Allow agent access?</h1>
+  <p>A coding agent wants to <b id="tool"></b> on</p>
+  <p class="host" id="host"></p>
+  <p class="muted small">It will be able to read and act on pages of this site.</p>
+  <div class="row">
+    <button data-d="once">Allow this session</button>
+    <button data-d="always" class="ghost">Always allow</button>
+    <button data-d="deny" class="danger">Deny</button>
+  </div>
+  <script src="approve.js"></script>
+</body>
+</html>

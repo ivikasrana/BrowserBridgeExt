@@ -1,0 +1,24 @@
+{
+  "name": "browser-bridge-ext",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Let any local coding agent drive Chrome, Edge or Firefox through MCP or a CLI.",
+  "type": "module",
+  "bin": {
+    "browser-bridge": "dist/bridge.cjs"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "tsc -p tsconfig.bridge.json && tsc -p tsconfig.ext.json",
+    "setup": "npm run build && node dist/bridge.cjs install"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.287",
+    "@types/node": "^22.10.0",
+    "@types/ws": "^8.5.13",
+    "esbuild": "^0.24.0",
+    "gifenc": "^1.0.3",
+    "typescript": "^5.7.2",
+    "ws": "^8.18.0"
+  }
+}
