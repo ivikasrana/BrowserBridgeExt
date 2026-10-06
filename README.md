@@ -1,8 +1,18 @@
-# Browser Bridge Ext
+# Browser Bridge Ext for local coding harness
 
-Lets any local coding agent or harness drive your real Chrome, Edge or Firefox: open tabs, read pages,
-click, type, fill forms, upload files, take screenshots, read console and network logs, and record GIFs.
-It uses your normal browser profile, so the agent sees what you are logged into.
+Let an AI coding agent drive your real Chrome, Edge, or Firefox — without headless, without Selenium, without
+losing your login sessions. It turns your browser into a tool any local agent can use.
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+### What you can do
+
+| Use case | How |
+|---|---|
+| **Automate web flows** | Agent fills forms, clicks buttons, checks out on e-commerce sites |
+| **Test web apps** | Agent navigates, takes screenshots, reads console/network logs |
+| **AI-assisted browsing** | Agent reads page structure, runs JS, extracts data |
+| **Record & replay** | Agent records actions as GIFs for debugging or documentation |
 
 ```
 agent ──MCP stdio / CLI──► bridge (Node) ◄──native messaging or WebSocket──► extension (Chrome / Edge / Firefox)
@@ -162,3 +172,8 @@ Branded Chrome 137+ ignores `--load-extension`, so headless needs one of:
 Headless instances report as `chrome-headless`; target them with `BROWSERBRIDGE_BROWSER=headless`. They run in
 allow-all mode (no one can click the approval prompt) on a throwaway profile (`~/.browserbridge/headless-profile`).
 After rebuilding the extension, delete that profile, because Chrome caches the old extension code in it.
+
+## License
+
+MIT License — free for personal, educational, and non-commercial use.
+Commercial / business use requires a paid license. Contact [vikasrulez@gmail.com](mailto:vikasrulez@gmail.com).

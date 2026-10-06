@@ -1,6 +1,7 @@
 {
   "name": "browser-bridge-ext",
   "version": "0.1.0",
+  "license": "MIT (personal/non-commercial) / Commercial (business use)",
   "private": true,
   "description": "Let any local coding agent drive Chrome, Edge or Firefox through MCP or a CLI.",
   "type": "module",
