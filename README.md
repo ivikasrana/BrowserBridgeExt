@@ -1,9 +1,8 @@
-# Browser Bridge Ext
+# Browser Bridge Ext for local coding harness
 
 Let an AI coding agent drive your real Chrome, Edge, or Firefox — without headless, without Selenium, without
 losing your login sessions. It turns your browser into a tool any local agent can use.
 
-[![npm version](https://img.shields.io/npm/v/browser-bridge-ext.svg)](https://www.npmjs.com/package/browser-bridge-ext)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ### What you can do
