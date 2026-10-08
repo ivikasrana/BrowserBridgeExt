@@ -40,6 +40,10 @@ export async function cdpMouse(tabId: number, kind: string, p: Pt) {
   }
 }
 
+export async function cdpWheel(tabId: number, p: Pt, dx: number, dy: number) {
+  await cdp(tabId, 'Input.dispatchMouseEvent', { type: 'mouseWheel', x: p.x, y: p.y, deltaX: dx, deltaY: dy });
+}
+
 export async function cdpDrag(tabId: number, a: Pt, b: Pt) {
   const send = (type: string, p: Pt, extra: object = {}) =>
     cdp(tabId, 'Input.dispatchMouseEvent', { type, x: p.x, y: p.y, ...extra });

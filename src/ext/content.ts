@@ -69,6 +69,10 @@ function init() {
         return fill(m.fields);
       case 'scroll':
         return scroll(m);
+      case 'scrollStart':
+        return scrollStart(m);
+      case 'scrollEnd':
+        return scrollEnd();
       case 'drag':
         return drag(m.ref, m.from, m.to);
       case 'mouseDrag':
@@ -717,33 +721,65 @@ function fill(fields: Record<string, unknown>) {
   return `filled ${n}` + (bad.length ? `; failed ${bad.join('; ')}` : '');
 }
 
-function scrollable(el: Element | null): Element | null {
-  for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
+function scrollables(el: Element | null): Element[] {
+  const out: Element[] = [];
+  for (let e: any = el; e && e !== document.documentElement; e = e.parentElement ?? e.parentNode?.host) {
     const s = getComputedStyle(e);
     if (/(auto|scroll|overlay)/.test(s.overflowY + s.overflowX) && (e.scrollHeight > e.clientHeight + 2 || e.scrollWidth > e.clientWidth + 2))
-      return e;
+      out.push(e);
   }
-  return null;
+  return out;
 }
 
-function scroll(m: { ref?: string; at?: Pt | null; dx?: number; dy?: number }) {
-  if (m.ref) {
-    byRef(m.ref).scrollIntoView({ block: 'center', behavior: 'instant' as ScrollBehavior });
-    return 'ok';
-  }
+type ScrollMark = { boxes: Element[]; pos: number[] };
+let scrollMark: ScrollMark | null = null;
+
+const boxPos = (b: Element[]) => b.flatMap((e) => [e.scrollLeft, e.scrollTop]).concat(scrollX, scrollY);
+const winText = () => `y=${Math.round(scrollY)}/${Math.max(0, document.documentElement.scrollHeight - innerHeight)}`;
+const boxText = (e: Element) => `box y=${Math.round(e.scrollTop)}/${e.scrollHeight - e.clientHeight}`;
+
+function scrollStart(m: { at?: Pt | null; dx?: number; dy?: number }) {
   const dx = Number(m.dx) || 0;
   const dy = m.dy != null ? Number(m.dy) : dx ? 0 : Math.round(innerHeight * 0.8);
-  const de = document.documentElement;
-  const pageScrolls = de.scrollHeight > innerHeight + 2 || de.scrollWidth > innerWidth + 2;
-  const at = m.at ?? { x: innerWidth / 2, y: innerHeight / 2 };
-  // App shells often scroll an inner container instead of the window.
-  const box = m.at || !pageScrolls ? scrollable(deepAt(at.x, at.y)) : null;
-  if (box) {
-    box.scrollBy({ left: dx, top: dy, behavior: 'instant' as ScrollBehavior });
-    return `box y=${Math.round(box.scrollTop)}/${box.scrollHeight - box.clientHeight}`;
+  const at = m.at ?? { x: Math.round(innerWidth / 2), y: Math.round(innerHeight / 2) };
+  const boxes = scrollables(deepAt(at.x, at.y));
+  scrollMark = { boxes, pos: boxPos(boxes) };
+  return { x: at.x, y: at.y, dx, dy };
+}
+
+async function scrollEnd() {
+  const mark = scrollMark;
+  scrollMark = null;
+  if (!mark) return winText();
+  let last = '';
+  for (let i = 0; i < 12; i++) {
+    await new Promise((r) => requestAnimationFrame(r));
+    const now = boxPos(mark.boxes).join();
+    if (now === last && now !== mark.pos.join()) break;
+    last = now;
+    await sleep(25);
   }
-  scrollBy({ left: dx, top: dy, behavior: 'instant' as ScrollBehavior });
-  return `y=${Math.round(scrollY)}/${de.scrollHeight - innerHeight}`;
+  const pos = boxPos(mark.boxes);
+  const moved = mark.boxes.find((_, i) => pos[i * 2] !== mark.pos[i * 2] || pos[i * 2 + 1] !== mark.pos[i * 2 + 1]);
+  if (moved) return boxText(moved);
+  if (pos.at(-2) !== mark.pos.at(-2) || pos.at(-1) !== mark.pos.at(-1)) return winText();
+  return `nothing scrolled (at the end, or the page handles the wheel itself) ${winText()}`;
+}
+
+function scroll(m: { ref?: string; x?: number; y?: number; dx: number; dy: number }) {
+  if (m.ref) {
+    const el = byRef(m.ref);
+    el.scrollIntoView({ block: 'center', behavior: 'instant' as ScrollBehavior });
+    const box = scrollables(el.parentElement)[0];
+    return box ? boxText(box) : winText();
+  }
+  const opt = { left: m.dx, top: m.dy, behavior: 'instant' as ScrollBehavior };
+  for (const box of scrollMark?.boxes ?? []) {
+    const before = box.scrollLeft + ',' + box.scrollTop;
+    box.scrollBy(opt);
+    if (box.scrollLeft + ',' + box.scrollTop !== before) return;
+  }
+  if (getComputedStyle(document.documentElement).overflowY !== 'hidden') scrollBy(opt);
 }
 
 function drag(ref: string | undefined, from: Pt, to: Pt) {

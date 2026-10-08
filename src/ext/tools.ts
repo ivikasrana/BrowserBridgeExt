@@ -1,6 +1,6 @@
 import { parseKeys } from '../shared/keys';
 import type { ToolResult } from '../shared/protocol';
-import { cdp, cdpDrag, cdpEnabled, cdpKeys, cdpMouse } from './cdp';
+import { cdp, cdpDrag, cdpEnabled, cdpKeys, cdpMouse, cdpWheel } from './cdp';
 import { api, clip, isFirefox, sleep } from './env';
 import { b64, bitmapOf, captureVisible, encodeJpeg, gifFrame, gifSave, gifStart, gifStop, isRecording, type Rect } from './image';
 import { netLines } from './net';
@@ -255,9 +255,20 @@ async function actTool(a: Args, sid: string): Promise<ToolResult> {
     case 'fill':
       note = ' ' + (await cs(id, { op: 'fill', fields: a.fields }));
       break;
-    case 'scroll':
-      note = ' ' + (await cs(id, { op: 'scroll', ref: a.ref, at: a.x != null ? await point(id, a) : null, dx: a.dx, dy: a.dy }));
+    case 'scroll': {
+      if (a.ref) {
+        note = ' ' + (await cs(id, { op: 'scroll', ref: a.ref }));
+        break;
+      }
+      const at = a.x != null ? await point(id, a) : null;
+      const s = await cs<Pt & { dx: number; dy: number }>(id, { op: 'scrollStart', at, dx: a.dx, dy: a.dy });
+      await tryCdp(
+        () => cdpWheel(id, s, s.dx, s.dy),
+        () => cs(id, { op: 'scroll', ...s }),
+      );
+      note = ' ' + (await cs(id, { op: 'scrollEnd' }));
       break;
+    }
     case 'drag': {
       if (!a.to) throw new Error('drag needs to (ref or "x,y")');
       const from = await point(id, a);
